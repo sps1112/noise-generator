@@ -7,11 +7,12 @@
 
 int main()
 {
+#if RANDOMIZE_SEED
     generate_new_seed();
-
+#endif
     std::cout << "Generating Texture..." << std::endl;
     TextureData texData(TEXTURE_ROWS, TEXTURE_COLUMNS);
-    Texture noiseMap = get_noisemap(texData.rows, texData.columns, PERLIN_NOISE, NOISE_SCALE);
+    Texture noiseMap = get_noisemap(texData.rows, texData.columns, NOISE_SCALE, NUMBER_OCTAVES, PERSISTANCE, LACUNARITY);
     texData.tex = noiseMap;
 
     std::cout << "Generating Image..." << std::endl;
@@ -19,4 +20,5 @@ int main()
     img = get_image(&(texData));
 
     stbi_write_png("out.png", texData.columns, texData.rows, 4, (void *)(img), texData.columns * sizeof(Colori));
+    std::cout << "Finish!!!" << std::endl;
 }

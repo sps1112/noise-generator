@@ -2,12 +2,14 @@
 #define NOISE_H
 
 #include <math_def.h>
+#include <config.h>
 
 // Header Declarations
 #include <iostream>
 #include <random>
 #include <ctime>
 #include <algorithm>
+#include <limits>
 
 // Flushes Random Val
 void flush_value()
@@ -143,32 +145,74 @@ enum NOISE_TYPE
     PERLIN_NOISE,
 };
 
-float *get_noisemap(int rows, int columns, NOISE_TYPE type = PERLIN_NOISE, float scale = 1.0f)
+float *get_noisemap(int rows, int columns)
 {
     float *noiseMap = new float[rows * columns];
-    scale = floor(scale, 0);
-    unsigned int seed = 237;
-    // unsigned int seed = (int)(get_random_noise() * 255 * 10);
-    PerlinNoiseGenerator pn(seed);
     for (int y = 0; y < rows; y++)
     {
         for (int x = 0; x < columns; x++)
         {
-            float noiseVal = 0.0f;
-            float sampleX = x / scale;
-            float sampleY = y / scale;
-            switch (type)
+            noiseMap[(y * columns) + x] = get_random_noise();
+        }
+    }
+    return noiseMap;
+}
+
+float *get_noisemap(int rows, int columns, float scale,
+                    int octaves, float persistence, float lacunarity, float xOffset = 0, float yOffset = 0)
+{
+    float *noiseMap = new float[rows * columns];
+    scale = floor(scale, 0);
+    lacunarity = max(lacunarity, 1.0f);
+    persistence = min(persistence, 1.0f);
+    unsigned int seed = 237;
+#if RANDOMIZE_SEED
+    std::cout << "Seed Random" << std::endl;
+    seed = (int)(get_random_noise() * 255 * 10);
+#endif
+    PerlinNoiseGenerator pn(seed);
+    float maxNoise = std::numeric_limits<float>::min();
+    float minNoise = std::numeric_limits<float>::max();
+    float *octaveOffsets = new float[octaves * 2];
+    for (int i = 0; i < octaves * 2; i++)
+    {
+        float defindeOffset = (i % 2 == 0) ? xOffset : yOffset;
+        octaveOffsets[i] = (get_random_noise() * 10000) + defindeOffset;
+    }
+    float halfX = 0.0f;
+    float halfY = 0.0f;
+#if SCALE_FROM_CENTER
+    halfX = columns / 2.0f;
+    halfY = rows / 2.0f;
+#endif
+    for (int y = 0; y < rows; y++)
+    {
+        for (int x = 0; x < columns; x++)
+        {
+            float amplitude = 1;
+            float frequency = 1;
+            float noiseVal = 0;
+            for (int i = 0; i < octaves; i++)
             {
-            case RANDOM_NOISE:
-                noiseVal = get_random_noise();
-                break;
-            case PERLIN_NOISE:
-                noiseVal = get_perlin_noise(sampleX, sampleY, &pn);
-                break;
-            default:
-                break;
+                float sampleX = (((x - halfX) / scale) * frequency) + octaveOffsets[(i * 2)];
+                float sampleY = (((y - halfY) / scale) * frequency) + octaveOffsets[(i * 2) + 1];
+                float noise = (get_perlin_noise(sampleX, sampleY, &pn) * 2) - 1;
+                noiseVal += noise * amplitude;
+                amplitude *= persistence;
+                frequency *= lacunarity;
             }
+            maxNoise = max(maxNoise, noiseVal);
+            minNoise = min(minNoise, noiseVal);
             noiseMap[(y * columns) + x] = noiseVal;
+        }
+    }
+    delete[] octaveOffsets;
+    std::cout << "Min Noise: " << minNoise << " and Max Noise: " << maxNoise << std::endl;
+    for (int y = 0; y < rows; y++)
+    {
+        for (int x = 0; x < columns; x++)
+        {
+            noiseMap[(y * columns) + x] = inverse_lerp(noiseMap[(y * columns) + x], minNoise, maxNoise);
         }
     }
     return noiseMap;
