@@ -3,8 +3,8 @@
 
 #define TEXTURE_COLUMNS 800
 #define TEXTURE_ROWS 600
-#define NOISE_SCALE 1
-#define GAMMA_CORRECTION 1
-#define TEXTURE_LOD 5
+#define NOISE_SCALE 50
+#define GAMMA_CORRECTION 0
+#define TEXTURE_LOD 1
 
 #endif // CONFIG_H

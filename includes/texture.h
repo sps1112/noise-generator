@@ -59,13 +59,13 @@ struct TextureData
 // Returns an image with a given Texture Data
 Image get_image(TextureData *texData)
 {
-    int imgLOD = texData->lod;
+    int imgLOD = texData->lod - 1;
     int rows = texData->rows;
     int columns = texData->columns;
     Image img = new Colori[rows * columns];
-    for (int i = 0; i < rows; i += imgLOD)
+    for (int i = 0; i < rows; i += 1 + imgLOD)
     {
-        for (int j = 0; j < columns; j += imgLOD)
+        for (int j = 0; j < columns; j += 1 + imgLOD)
         {
             int texIndex = texData->get_index(i, j);
             int iEnd = clampi(i + imgLOD, 0, rows - 1);

@@ -18,4 +18,13 @@ float floor(float val, float min, float diff = 0.0001)
 {
     return ((val < (min + diff)) ? (min + diff) : val);
 }
+
+// Lerps between a and b by amount l
+float lerp(float a, float b, float l)
+{
+    l = clamp(l);
+    float diff = b - a;
+    return a + (l * diff); // l=0 => a and l=1 => b
+}
+
 #endif // MATH_DEF_H
