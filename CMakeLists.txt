@@ -13,3 +13,10 @@ include_directories(includes)
 add_executable(noise-generator 
                 src/main.cpp
                 src/stb_image_write.cpp)
+
+if(WIN32)
+add_custom_command(TARGET noise-generator POST_BUILD   
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/dlls/libstdc++-6.dll"
+        $<TARGET_FILE_DIR:noise-generator>)    
+endif()
