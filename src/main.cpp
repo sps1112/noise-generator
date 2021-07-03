@@ -1,6 +1,10 @@
+// Custom Headers
+#include <noise.h>
+// Standard Headers
 #include <iostream>
 
 int main()
 {
-    std::cout << "Hello World!" << std::endl;
+    generate_new_seed();
+    std::cout << get_random_noise() << std::endl;
 }
