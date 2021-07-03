@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include <config.h>
+#include <math_def.h>
 #include <iostream>
 #include <array>
 
@@ -13,9 +14,9 @@ Colori get_color(float r, float g, float b)
 #if GAMMACORRETION
     // Gamma correction
     double gamma = 1 / 2.2;
-    double r = std::pow(r, gamma);
-    double g = std::pow(g, gamma);
-    double b = std::pow(b, gamma);
+    double r = std::pow(clamp(r), gamma);
+    double g = std::pow(clamp(g), gamma);
+    double b = std::pow(clamp(b), gamma);
 #endif
     // Convert a valid Colorf to Colori
     return (255 << 24) | ((int)std::floor(b * 255) << 16) | ((int)std::floor(g * 255) << 8) | (int)std::floor(r * 255);
@@ -32,8 +33,9 @@ struct TextureData
     int rows;
     int columns;
     Texture tex;
+    int lod;
     // Default Constructor
-    TextureData(int rows_, int columns_) : rows(rows_), columns(columns_) {}
+    TextureData(int rows_, int columns_) : rows(rows_), columns(columns_), lod(TEXTURE_LOD) {}
     // Returns total number of pixels
     int get_length()
     {
@@ -55,13 +57,54 @@ struct TextureData
 Image get_image(TextureData *texData)
 {
     Image img;
-    for (int i = 0; i < texData->rows; i++)
+    int imgLOD = texData->lod;
+    int rows = texData->rows;
+    int columns = texData->columns;
+    for (int i = 0; i < rows; i += imgLOD)
     {
-        for (int j = 0; j < texData->columns; j++)
+        for (int j = 0; j < columns; j += imgLOD)
         {
-            int index = texData->get_index(i, j);
+            int texIndex = texData->get_index(i, j);
+            int iEnd = clampi(i + imgLOD, 0, rows - 1);
+            int jEnd = clamp(j + imgLOD, 0, columns - 1);
+            for (int newI = i; newI <= iEnd; newI++)
+            {
+                for (int newJ = j; newJ <= jEnd; newJ++)
+                {
+                    int imgIndex = texData->get_index(newI, newJ);
+                    img[imgIndex] = get_color(texData->tex[texIndex], texData->tex[texIndex], texData->tex[texIndex]);
+                }
+            }
             // img[tex->get_index(i, j)] = 0xFF000000; // black
-            img[index] = get_color(texData->tex[index], texData->tex[index], texData->tex[index]);
+        }
+    }
+    return img;
+}
+
+Image get_random_image(TextureData *texData)
+{
+    Image img;
+    int imgLOD = texData->lod;
+    int rows = texData->rows;
+    int columns = texData->columns;
+    for (int i = 0; i < rows; i += imgLOD)
+    {
+        for (int j = 0; j < columns; j += imgLOD)
+        {
+            float colR = get_random_noise();
+            float colG = get_random_noise();
+            float colB = get_random_noise();
+            int iEnd = clampi(i + imgLOD, 0, rows - 1);
+            int jEnd = clamp(j + imgLOD, 0, columns - 1);
+            for (int newI = i; newI <= iEnd; newI++)
+            {
+                for (int newJ = j; newJ <= jEnd; newJ++)
+                {
+                    int imgIndex = texData->get_index(newI, newJ);
+                    img[imgIndex] = get_color(colR, colG, colB);
+                }
+            }
+            // img[tex->get_index(i, j)] = 0xFF000000; // black
         }
     }
     return img;
