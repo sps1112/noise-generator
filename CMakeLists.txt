@@ -10,4 +10,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 include_directories(includes)
 
-add_executable(noise-generator src/main.cpp)
+add_executable(noise-generator 
+                src/main.cpp
+                src/stb_image_write.cpp)
