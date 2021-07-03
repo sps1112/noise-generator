@@ -1,8 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define TEXTURE_COLUMNS 300
-#define TEXTURE_ROWS 300
+#define TEXTURE_COLUMNS 800
+#define TEXTURE_ROWS 600
 #define GAMMA_CORRECTION 1
 #define TEXTURE_LOD 5
 

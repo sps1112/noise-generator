@@ -23,9 +23,9 @@ Colori get_color(float r, float g, float b)
 }
 
 // The Texture data type which holds a float for each pixel
-using Texture = std::array<float, TEXTURE_COLUMNS * TEXTURE_ROWS>;
+using Texture = float *;
 // The Image data type which holda a Colori for each pixel
-using Image = std::array<Colori, TEXTURE_COLUMNS * TEXTURE_ROWS>;
+using Image = Colori *;
 
 // The Texture Data struct
 struct TextureData
@@ -35,7 +35,10 @@ struct TextureData
     Texture tex;
     int lod;
     // Default Constructor
-    TextureData(int rows_, int columns_) : rows(rows_), columns(columns_), lod(TEXTURE_LOD) {}
+    TextureData(int rows_, int columns_) : rows(rows_), columns(columns_), lod(TEXTURE_LOD)
+    {
+        tex = new float[rows * columns];
+    }
     // Returns total number of pixels
     int get_length()
     {
@@ -56,10 +59,10 @@ struct TextureData
 // Returns an image with a given Texture Data
 Image get_image(TextureData *texData)
 {
-    Image img;
     int imgLOD = texData->lod;
     int rows = texData->rows;
     int columns = texData->columns;
+    Image img = new Colori[rows * columns];
     for (int i = 0; i < rows; i += imgLOD)
     {
         for (int j = 0; j < columns; j += imgLOD)
@@ -83,10 +86,10 @@ Image get_image(TextureData *texData)
 
 Image get_random_image(TextureData *texData)
 {
-    Image img;
     int imgLOD = texData->lod;
     int rows = texData->rows;
     int columns = texData->columns;
+    Image img = new Colori[rows * columns];
     for (int i = 0; i < rows; i += imgLOD)
     {
         for (int j = 0; j < columns; j += imgLOD)
@@ -104,7 +107,6 @@ Image get_random_image(TextureData *texData)
                     img[imgIndex] = get_color(colR, colG, colB);
                 }
             }
-            // img[tex->get_index(i, j)] = 0xFF000000; // black
         }
     }
     return img;
