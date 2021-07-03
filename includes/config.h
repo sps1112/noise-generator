@@ -1,4 +1,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#define TEXTURE_ROWS 300
+#define TEXTURE_COLUMNS 300
+#define GAMMA_CORRECTION 1
+
 #endif // CONFIG_H
