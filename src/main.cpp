@@ -2,6 +2,7 @@
 #include <noise.h>
 #include <stb_image_write.h>
 #include <texture.h>
+#include <mapgen.h>
 // Standard Headers
 #include <iostream>
 
@@ -17,7 +18,7 @@ int main()
 
     std::cout << "Generating Image..." << std::endl;
     Image img = new Colori[texData.rows * texData.columns];
-    img = get_image(&(texData));
+    img = get_colormap(&(texData));
 
     stbi_write_png("out.png", texData.columns, texData.rows, 4, (void *)(img), texData.columns * sizeof(Colori));
     std::cout << "Finish!!!" << std::endl;

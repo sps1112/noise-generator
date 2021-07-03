@@ -6,26 +6,34 @@
 #include <iostream>
 #include <array>
 
+// A Color type as (r,g,b)
+struct Colorf
+{
+    float r;
+    float g;
+    float b;
+    Colorf(float a) : r(a), g(a), b(a) {}
+    Colorf(float r_, float g_, float b_) : r(r_), g(g_), b(b_) {}
+};
+
 // Color Data Type for the stb library
 using Colori = uint32_t;
 // Returns a Colori from (r,g,b) values
-Colori get_color(float r, float g, float b)
+Colori get_color(Colorf col)
 {
 #if GAMMA_CORRECTION
     // Gamma correction
-    double gamma = 1 / 2.2;
-    r = std::pow(clamp(r), gamma);
-    g = std::pow(clamp(g), gamma);
-    b = std::pow(clamp(b), gamma);
+    float gamma = 1 / 2.2f;
+    col.r = std::pow(clamp(col.r), gamma);
+    col.g = std::pow(clamp(col.g), gamma);
+    col.b = std::pow(clamp(col.b), gamma);
 #endif
     // Convert a valid Colorf to Colori
-    return (255 << 24) | ((int)std::floor(b * 255) << 16) | ((int)std::floor(g * 255) << 8) | (int)std::floor(r * 255);
+    return (255 << 24) | ((int)std::floor(col.b * 255) << 16) | ((int)std::floor(col.g * 255) << 8) | (int)std::floor(col.r * 255);
 }
 
 // The Texture data type which holds a float for each pixel
 using Texture = float *;
-// The Image data type which holda a Colori for each pixel
-using Image = Colori *;
 
 // The Texture Data struct
 struct TextureData
@@ -55,61 +63,5 @@ struct TextureData
         tex[index] = val;
     }
 };
-
-// Returns an image with a given Texture Data
-Image get_image(TextureData *texData)
-{
-    int imgLOD = texData->lod - 1;
-    int rows = texData->rows;
-    int columns = texData->columns;
-    Image img = new Colori[rows * columns];
-    for (int i = 0; i < rows; i += 1 + imgLOD)
-    {
-        for (int j = 0; j < columns; j += 1 + imgLOD)
-        {
-            int texIndex = texData->get_index(i, j);
-            int iEnd = clampi(i + imgLOD, 0, rows - 1);
-            int jEnd = clamp(j + imgLOD, 0, columns - 1);
-            for (int newI = i; newI <= iEnd; newI++)
-            {
-                for (int newJ = j; newJ <= jEnd; newJ++)
-                {
-                    int imgIndex = texData->get_index(newI, newJ);
-                    img[imgIndex] = get_color(texData->tex[texIndex], texData->tex[texIndex], texData->tex[texIndex]);
-                }
-            }
-            // img[tex->get_index(i, j)] = 0xFF000000; // black
-        }
-    }
-    return img;
-}
-
-Image get_random_image(TextureData *texData)
-{
-    int imgLOD = texData->lod;
-    int rows = texData->rows;
-    int columns = texData->columns;
-    Image img = new Colori[rows * columns];
-    for (int i = 0; i < rows; i += imgLOD)
-    {
-        for (int j = 0; j < columns; j += imgLOD)
-        {
-            float colR = get_random_noise();
-            float colG = get_random_noise();
-            float colB = get_random_noise();
-            int iEnd = clampi(i + imgLOD, 0, rows - 1);
-            int jEnd = clamp(j + imgLOD, 0, columns - 1);
-            for (int newI = i; newI <= iEnd; newI++)
-            {
-                for (int newJ = j; newJ <= jEnd; newJ++)
-                {
-                    int imgIndex = texData->get_index(newI, newJ);
-                    img[imgIndex] = get_color(colR, colG, colB);
-                }
-            }
-        }
-    }
-    return img;
-}
 
 #endif // TEXTURE_H
