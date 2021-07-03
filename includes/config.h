@@ -3,6 +3,7 @@
 
 #define TEXTURE_COLUMNS 800
 #define TEXTURE_ROWS 600
+#define NOISE_SCALE 1
 #define GAMMA_CORRECTION 1
 #define TEXTURE_LOD 5
 

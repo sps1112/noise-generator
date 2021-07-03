@@ -13,4 +13,9 @@ int clampi(int val, int min, int max)
     return ((val > max) ? max : ((val < min) ? min : val));
 }
 
+// Sets the val to be greater than min by diff
+float floor(float val, float min, float diff = 0.0001)
+{
+    return ((val < (min + diff)) ? (min + diff) : val);
+}
 #endif // MATH_DEF_H

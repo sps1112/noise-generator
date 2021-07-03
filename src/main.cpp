@@ -11,13 +11,8 @@ int main()
 
     std::cout << "Generating Texture..." << std::endl;
     TextureData texData(TEXTURE_ROWS, TEXTURE_COLUMNS);
-    for (int i = 0; i < texData.rows; i++)
-    {
-        for (int j = 0; j < texData.columns; j++)
-        {
-            texData.set_value(get_random_noise(), texData.get_index(i, j));
-        }
-    }
+    Texture noiseMap = get_noisemap(texData.rows, texData.columns, PERLIN_NOISE, NOISE_SCALE);
+    texData.tex = noiseMap;
 
     std::cout << "Generating Image..." << std::endl;
     Image img = new Colori[texData.rows * texData.columns];

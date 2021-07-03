@@ -11,12 +11,12 @@ using Colori = uint32_t;
 // Returns a Colori from (r,g,b) values
 Colori get_color(float r, float g, float b)
 {
-#if GAMMACORRETION
+#if GAMMA_CORRECTION
     // Gamma correction
     double gamma = 1 / 2.2;
-    double r = std::pow(clamp(r), gamma);
-    double g = std::pow(clamp(g), gamma);
-    double b = std::pow(clamp(b), gamma);
+    r = std::pow(clamp(r), gamma);
+    g = std::pow(clamp(g), gamma);
+    b = std::pow(clamp(b), gamma);
 #endif
     // Convert a valid Colorf to Colori
     return (255 << 24) | ((int)std::floor(b * 255) << 16) | ((int)std::floor(g * 255) << 8) | (int)std::floor(r * 255);
