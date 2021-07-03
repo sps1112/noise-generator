@@ -13,6 +13,8 @@
 #define PERSISTANCE 0.5f
 #define LACUNARITY 2.0f
 #define SCALE_FROM_CENTER 1
+#define FALLOFF_CURVE 4
+#define FALLOFF_SHIFT 5
 
 // Color Settings
 #define COLOR_WHITE Colorf(1.0f)

@@ -46,4 +46,9 @@ float inverse_lerp(float a, float min, float max)
     return (a - min) / diff;
 }
 
+float absolute(float a)
+{
+    return ((a < 0) ? -a : a);
+}
+
 #endif // MATH_DEF_H

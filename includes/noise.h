@@ -158,6 +158,30 @@ float *get_noisemap(int rows, int columns)
     return noiseMap;
 }
 
+float eval_falloff_value(float val, float curve, float shift)
+{
+    float a = curve;
+    float b = shift;
+    val = pow(val, a) / (pow(val, a) + pow(b - (b * val), a));
+    return val;
+}
+
+float *get_falloffmap(int rows, int columns, float curve, float shift)
+{
+    float *falloffmap = new float[rows * columns];
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            float y = ((float)i / rows) * 2 - 1;
+            float x = ((float)j / columns) * 2 - 1;
+            float val = max(absolute(x), absolute(y));
+            falloffmap[(i * columns) + j] = clamp(eval_falloff_value(val, curve, shift));
+        }
+    }
+    return falloffmap;
+}
+
 float *get_noisemap(int rows, int columns, float scale,
                     int octaves, float persistence, float lacunarity, float xOffset = 0, float yOffset = 0)
 {
@@ -216,5 +240,19 @@ float *get_noisemap(int rows, int columns, float scale,
         }
     }
     return noiseMap;
+}
+
+// Subtracts Noise map 'b' from 'a'
+float *subtract_maps(float *a, float *b, int rows, int columns)
+{
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            a[i * columns + j] -= b[i * columns + j];
+            a[i * columns + j] = clamp(a[i * columns + j]);
+        }
+    }
+    return a;
 }
 #endif // NOISE_H
