@@ -1,6 +1,7 @@
 #ifndef MAPGEN_H
 #define MAPGEN_H
 
+// Custom Headers
 #include <texture.h>
 #include <config.h>
 
@@ -36,7 +37,7 @@ Image get_image(TextureData *texData)
     return img;
 }
 
-// Returns a random image
+// Returns a random image with each pixel a random color
 Image get_random_image(TextureData *texData)
 {
     int imgLOD = texData->lod;
@@ -63,17 +64,20 @@ Image get_random_image(TextureData *texData)
     return img;
 }
 
+// The Map Section Struct for the Color Map
 struct MapSection
 {
-    Colorf col;
-    float height;
+    Colorf col;   // Color of the Section
+    float height; // The Height from which section starts
+    // Default Constructor
     MapSection(Colorf col_, float height_ = 0.0f) : col(col_)
     {
         height = clamp(height_);
     }
 };
 
-MapSection mapSections[8] = {
+// The Default Map Sections for a Color Map
+const MapSection mapSections[8] = {
     MapSection(DARK_BLUE),
     MapSection(OCEAN_BLUE, 0.05f),
     MapSection(DARK_YELLOW, 0.375f),
@@ -83,6 +87,7 @@ MapSection mapSections[8] = {
     MapSection(DARK_BROWN, 0.85f),
     MapSection(LIGHT_BLUE, 0.925f)};
 
+// Gets the Section from the pixel height
 Colorf get_color_from_sections(float height)
 {
     Colorf col(0.0f);
@@ -97,6 +102,7 @@ Colorf get_color_from_sections(float height)
     return col;
 }
 
+// Gets Color Map from Noise Map
 Image get_colormap(TextureData *texData)
 {
     int imgLOD = texData->lod - 1;

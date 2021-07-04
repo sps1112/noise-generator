@@ -1,10 +1,11 @@
 #ifndef NOISE_H
 #define NOISE_H
 
+// Custom Headers
 #include <math_def.h>
 #include <config.h>
 
-// Header Declarations
+// Standard Headera
 #include <iostream>
 #include <random>
 #include <ctime>
@@ -134,17 +135,13 @@ private:
     }
 };
 
+// Gets Perlin Noise from X and Y coordinate
 float get_perlin_noise(float x, float y, PerlinNoiseGenerator *pn)
 {
     return pn->noise(x, y, 0.0f);
 }
 
-enum NOISE_TYPE
-{
-    RANDOM_NOISE,
-    PERLIN_NOISE,
-};
-
+// Gets a Random Noise Map
 float *get_noisemap(int rows, int columns)
 {
     float *noiseMap = new float[rows * columns];
@@ -158,6 +155,7 @@ float *get_noisemap(int rows, int columns)
     return noiseMap;
 }
 
+// Gets a Perlin Noise Map
 float *get_noisemap(int rows, int columns, float scale)
 {
     float *noiseMap = new float[rows * columns];
@@ -181,6 +179,7 @@ float *get_noisemap(int rows, int columns, float scale)
     return noiseMap;
 }
 
+// Gets a Perlin Noise Map with Octaves
 float *get_noisemap(int rows, int columns, float scale,
                     int octaves, float persistence, float lacunarity, float xOffset = 0, float yOffset = 0)
 {
@@ -241,6 +240,7 @@ float *get_noisemap(int rows, int columns, float scale,
     return noiseMap;
 }
 
+// Evaluates the Val of FallOff
 float eval_falloff_value(float val, float curve, float shift)
 {
     float a = curve;
@@ -249,6 +249,7 @@ float eval_falloff_value(float val, float curve, float shift)
     return val;
 }
 
+// Gets a FallOff Map
 float *get_falloffmap(int rows, int columns, float curve, float shift)
 {
     float *falloffmap = new float[rows * columns];
@@ -278,4 +279,5 @@ float *subtract_maps(float *a, float *b, int rows, int columns)
     }
     return a;
 }
+
 #endif // NOISE_H

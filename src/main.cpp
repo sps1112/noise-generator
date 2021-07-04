@@ -3,6 +3,7 @@
 #include <stb_image_write.h>
 #include <texture.h>
 #include <mapgen.h>
+
 // Standard Headers
 #include <iostream>
 

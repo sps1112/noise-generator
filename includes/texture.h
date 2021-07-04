@@ -1,17 +1,20 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+// Custom Headers
 #include <config.h>
 #include <math_def.h>
+
+// Standard Headers
 #include <iostream>
 #include <array>
 
-// A Color type as (r,g,b)
+// A Color type as (r,g,b) with each from (0.0 to 1,0)
 struct Colorf
 {
-    float r;
-    float g;
-    float b;
+    float r; // Red Channel
+    float g; // Green Channel
+    float b; // Blue Channel
     Colorf(float a) : r(a), g(a), b(a) {}
     Colorf(float r_, float g_, float b_) : r(r_), g(g_), b(b_) {}
 };
@@ -38,25 +41,28 @@ using Texture = float *;
 // The Texture Data struct
 struct TextureData
 {
-    int rows;
-    int columns;
-    Texture tex;
-    int lod;
+    int rows;    // Number of Rows
+    int columns; // Number of Columns
+    Texture tex; // The Texture data
+    int lod;     // Level of Detail of Texture
     // Default Constructor
     TextureData(int rows_, int columns_) : rows(rows_), columns(columns_), lod(TEXTURE_LOD)
     {
         tex = new float[rows * columns];
     }
+
     // Returns total number of pixels
     int get_length()
     {
         return rows * columns;
     }
+
     // Returns a pixel index from row number and column number
     int get_index(int rowNumber, int columnNumber)
     {
         return (rowNumber * columns) + columnNumber;
     }
+
     // Sets the texture value for a given pixel
     void set_value(float val, int index)
     {
