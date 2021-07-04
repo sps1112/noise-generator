@@ -8,13 +8,18 @@
 
 // Noise Settings
 #define RANDOMIZE_SEED 0
+#define DRAW_PERLIN_NOISE 1
 #define NOISE_SCALE 100
+#define DRAW_OCTAVES 1
 #define NUMBER_OCTAVES 4
 #define PERSISTANCE 0.5f
 #define LACUNARITY 2.0f
 #define SCALE_FROM_CENTER 1
+#define DRAW_COLORMAP 1
+#define APPLY_FALLOFF 1
 #define FALLOFF_CURVE 4
 #define FALLOFF_SHIFT 5
+#define DRAW_FALLOFF_ONLY 0
 
 // Color Settings
 #define COLOR_WHITE Colorf(1.0f)

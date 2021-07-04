@@ -158,28 +158,27 @@ float *get_noisemap(int rows, int columns)
     return noiseMap;
 }
 
-float eval_falloff_value(float val, float curve, float shift)
+float *get_noisemap(int rows, int columns, float scale)
 {
-    float a = curve;
-    float b = shift;
-    val = pow(val, a) / (pow(val, a) + pow(b - (b * val), a));
-    return val;
-}
-
-float *get_falloffmap(int rows, int columns, float curve, float shift)
-{
-    float *falloffmap = new float[rows * columns];
-    for (int i = 0; i < rows; i++)
+    float *noiseMap = new float[rows * columns];
+    scale = floor(scale, 0);
+    unsigned int seed = 237;
+#if RANDOMIZE_SEED
+    std::cout << "Randomize Seed" << std::endl;
+    seed = (int)(get_random_noise() * 255 * 10);
+#endif
+    PerlinNoiseGenerator pn(seed);
+    for (int y = 0; y < rows; y++)
     {
-        for (int j = 0; j < columns; j++)
+        for (int x = 0; x < columns; x++)
         {
-            float y = ((float)i / rows) * 2 - 1;
-            float x = ((float)j / columns) * 2 - 1;
-            float val = max(absolute(x), absolute(y));
-            falloffmap[(i * columns) + j] = clamp(eval_falloff_value(val, curve, shift));
+            float sampleX = (x / scale);
+            float sampleY = (y / scale);
+            float noiseVal = get_perlin_noise(sampleX, sampleY, &pn);
+            noiseMap[(y * columns) + x] = noiseVal;
         }
     }
-    return falloffmap;
+    return noiseMap;
 }
 
 float *get_noisemap(int rows, int columns, float scale,
@@ -191,7 +190,7 @@ float *get_noisemap(int rows, int columns, float scale,
     persistence = min(persistence, 1.0f);
     unsigned int seed = 237;
 #if RANDOMIZE_SEED
-    std::cout << "Seed Random" << std::endl;
+    std::cout << "Randomize Seed" << std::endl;
     seed = (int)(get_random_noise() * 255 * 10);
 #endif
     PerlinNoiseGenerator pn(seed);
@@ -240,6 +239,30 @@ float *get_noisemap(int rows, int columns, float scale,
         }
     }
     return noiseMap;
+}
+
+float eval_falloff_value(float val, float curve, float shift)
+{
+    float a = curve;
+    float b = shift;
+    val = pow(val, a) / (pow(val, a) + pow(b - (b * val), a));
+    return val;
+}
+
+float *get_falloffmap(int rows, int columns, float curve, float shift)
+{
+    float *falloffmap = new float[rows * columns];
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < columns; j++)
+        {
+            float y = ((float)i / rows) * 2 - 1;
+            float x = ((float)j / columns) * 2 - 1;
+            float val = max(absolute(x), absolute(y));
+            falloffmap[(i * columns) + j] = clamp(eval_falloff_value(val, curve, shift));
+        }
+    }
+    return falloffmap;
 }
 
 // Subtracts Noise map 'b' from 'a'
