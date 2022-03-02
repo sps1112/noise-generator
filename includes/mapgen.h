@@ -80,10 +80,10 @@ struct MapSection
 const MapSection mapSections[MAP_REGIONS] = {
     MapSection(DARK_BLUE),
     MapSection(OCEAN_BLUE, 0.05f),
-    MapSection(DARK_YELLOW, 0.375f),
+    MapSection(DARK_YELLOW, 0.37f),
     MapSection(LAND_GREEN, 0.4f),
-    MapSection(DARK_GREEN, 0.65f),
-    MapSection(LIGHT_BROWN, 0.70f),
+    MapSection(DARK_GREEN, 0.6f),
+    MapSection(LIGHT_BROWN, 0.725f),
     MapSection(DARK_BROWN, 0.85f),
     MapSection(LIGHT_BLUE, 0.925f)};
 
