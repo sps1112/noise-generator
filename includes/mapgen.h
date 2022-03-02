@@ -77,7 +77,7 @@ struct MapSection
 };
 
 // The Default Map Sections for a Color Map
-const MapSection mapSections[8] = {
+const MapSection mapSections[MAP_REGIONS] = {
     MapSection(DARK_BLUE),
     MapSection(OCEAN_BLUE, 0.05f),
     MapSection(DARK_YELLOW, 0.375f),
@@ -87,19 +87,25 @@ const MapSection mapSections[8] = {
     MapSection(DARK_BROWN, 0.85f),
     MapSection(LIGHT_BLUE, 0.925f)};
 
-// Gets the Section from the pixel height
-Colorf get_color_from_sections(float height)
+// Gets the Section index from the pixel height
+int get_index_from_height(float height)
 {
-    Colorf col(0.0f);
-    for (int i = 0; i < 8; i++)
+    int n = 0;
+    for (int i = 0; i < MAP_REGIONS; i++)
     {
         if (mapSections[i].height > height)
         {
             break;
         }
-        col = mapSections[i].col;
+        n = i;
     }
-    return col;
+    return n;
+}
+
+// Gets the Section from the pixel height
+Colorf get_color_from_sections(float height)
+{
+    return mapSections[get_index_from_height(height)].col;
 }
 
 // Gets Color Map from Noise Map
@@ -120,9 +126,28 @@ Image get_colormap(TextureData *texData)
             {
                 for (int newJ = j; newJ <= jEnd; newJ++)
                 {
-                    int imgIndex = texData->get_index(newI, newJ);
                     float height = texData->tex[texIndex];
-                    Colorf col = get_color_from_sections(height);
+
+                    int index = get_index_from_height(height);
+                    Colorf col = mapSections[index].col;
+#if BLEND_REGIONS
+                    int indexB = index + 1;
+                    float h2 = 1.0f;
+                    Colorf col2(1.0f);
+                    if (indexB < MAP_REGIONS)
+                    {
+                        h2 = mapSections[indexB].height;
+                        col2 = mapSections[indexB].col;
+                    }
+
+                    float off = inverse_lerp(height, mapSections[index].height, h2);
+                    if (off > BLEND_THRESHOLD)
+                    {
+                        Colorf mixCol = col_lerp(col, col2, off);
+                        col = col_lerp(col, mixCol, BLEND_FACTOR);
+                    }
+#endif
+                    int imgIndex = texData->get_index(newI, newJ);
                     img[imgIndex] = get_color(col);
                 }
             }

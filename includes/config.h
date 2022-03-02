@@ -40,6 +40,12 @@
 #define DARK_BROWN Colorf(0.3f, 0.075f, 0.0f)
 #define LIGHT_BLUE Colorf(0.75f, 1.0f, 1.0f)
 
+// Map Settings
+#define MAP_REGIONS 8
+#define BLEND_REGIONS 1
+#define BLEND_THRESHOLD 0.85f
+#define BLEND_FACTOR 0.65f
+
 // Image Settings
 #define GAMMA_CORRECTION 0
 

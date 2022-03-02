@@ -19,6 +19,16 @@ struct Colorf
     Colorf(float r_, float g_, float b_) : r(r_), g(g_), b(b_) {}
 };
 
+// Lerps b/w 2 colors by factor t
+Colorf col_lerp(Colorf a, Colorf b, float t)
+{
+    Colorf c(a);
+    c.r = lerp(a.r, b.r, t);
+    c.b = lerp(a.b, b.b, t);
+    c.g = lerp(a.g, b.g, t);
+    return c;
+}
+
 // Color Data Type for the stb library
 using Colori = uint32_t;
 // Returns a Colori from (r,g,b) values
