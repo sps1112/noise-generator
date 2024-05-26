@@ -193,8 +193,8 @@ float *get_noisemap(int rows, int columns, float scale,
     seed = (int)(get_random_noise() * 255 * 10);
 #endif
     PerlinNoiseGenerator pn(seed);
-    float maxNoise = std::numeric_limits<float>::min();
     float minNoise = std::numeric_limits<float>::max();
+    float maxNoise = -minNoise;
     float *octaveOffsets = new float[octaves * 2];
     for (int i = 0; i < octaves * 2; i++)
     {

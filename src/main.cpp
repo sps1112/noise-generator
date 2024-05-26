@@ -15,6 +15,10 @@ int main()
 
     std::cout << "Generating Texture..." << std::endl;
     TextureData texData(TEXTURE_ROWS, TEXTURE_COLUMNS);
+
+//---------------------------
+// !GET NOISE MAP
+//---------------------------
 #if !DRAW_FALLOFF_ONLY
 #if DRAW_PERLIN_NOISE
 #if DRAW_OCTAVES
@@ -39,6 +43,10 @@ int main()
 
     std::cout << "Generating Image..." << std::endl;
     Image img = new Colori[texData.rows * texData.columns];
+
+//---------------------------
+// !GET COLOR MAP
+//---------------------------
 #if DRAW_COLORMAP
     img = get_colormap(&(texData));
 #else
